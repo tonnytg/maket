@@ -1,39 +1,51 @@
 package database
 
 import (
-	"context"
 	"database/sql"
-	"flag"
-	"os"
-	"time"
+	_ "github.com/mattn/go-sqlite3"
+	"log"
 )
 
-func InitDatabase() {
+func InitDatabase(conn *sql.DB) {
+	_, err := conn.Exec(`
+		CREATE TABLE IF NOT EXISTS targets (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT,
+			value REAL,
+			deadline TEXT,
+			created_at TEXT
+		);
+	`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-var pool *sql.DB // Database connection pool.
+func GetConnection() *sql.DB {
+
+	pool := &sql.DB{}
+	pool.SetMaxOpenConns(10)
+	pool.SetMaxIdleConns(10)
+	pool.SetConnMaxLifetime(0)
+
+	pool, err := sql.Open("sqlite3", "./makemoneytarget.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pool
+}
 
 func Start() {
 
-	dsn := flag.String("dsn", os.Getenv("DSN"), "connection data source name")
+	conn := GetConnection()
+	defer conn.Close()
 
-	pool, err := sql.Open("sqlite3", *dsn)
+	err := conn.Ping()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	if err := pool.Ping(); err != nil {
-		panic(err)
-	}
-
-	pool.SetConnMaxLifetime(0)
-	pool.SetMaxIdleConns(3)
-	pool.SetMaxOpenConns(3)
-
-}
-
-func Query(query string) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
+	InitDatabase(conn)
 }

@@ -22,7 +22,7 @@ const (
 )
 
 type Target struct {
-	ID            uuid.UUID
+	UUID          string
 	Name          string
 	Description   string
 	Status        string
@@ -34,7 +34,7 @@ type Target struct {
 }
 
 type TargetInterface interface {
-	GetUUID() uuid.UUID
+	GetUUID() string
 	GetName() string
 	GetDescription() string
 	GetStatus() string
@@ -59,7 +59,7 @@ type TargetInterface interface {
 }
 
 func (t Target) GetUUID() string {
-	return t.ID.String()
+	return t.UUID
 }
 
 func (t Target) GetName() string {
@@ -140,10 +140,6 @@ func (t *Target) SetNewMembers(members []member.Member) {
 
 func (t *Target) Validate() (*Target, error) {
 
-	if t.ID == uuid.Nil {
-		return nil, fmt.Errorf(ErrorInvalidUUID)
-	}
-
 	if t.Name == "" {
 		return nil, fmt.Errorf(ErrNameIsRequired)
 	}
@@ -174,7 +170,7 @@ func (t *Target) Validate() (*Target, error) {
 func NewTarget(name, description, startDate, endDate string, targetAmount float64, members []member.Member) *Target {
 
 	t := Target{}
-	t.ID = uuid.New()
+	t.UUID = uuid.New().String()
 	t.SetName(name)
 	t.SetDescription(description)
 	t.SetStatus(TargetStatusActive)
