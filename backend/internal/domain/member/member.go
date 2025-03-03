@@ -3,11 +3,18 @@ package member
 import "github.com/google/uuid"
 
 type Member struct {
-	ID       uuid.UUID
-	Name     string
-	Email    string
-	Role     string
-	CreateAt string
-	UpdateAt string
-	DeleteAt string
+	UUID  string
+	Name  string
+	Email string
+	Role  string
+}
+
+func NewMember(name, email, role string) *Member {
+
+	return &Member{
+		UUID:  uuid.New().String(),
+		Name:  name,
+		Email: email,
+		Role:  role,
+	}
 }

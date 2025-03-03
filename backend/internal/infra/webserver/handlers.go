@@ -2,7 +2,6 @@ package webserver
 
 import (
 	"encoding/json"
-	"github.com/tonnytg/makemoneytarget/internal/domain/member"
 	"github.com/tonnytg/makemoneytarget/internal/domain/target"
 	"github.com/tonnytg/makemoneytarget/internal/infra/database"
 	"io"
@@ -52,7 +51,7 @@ func createTarget(w http.ResponseWriter, r *http.Request) {
 		CurrentAmount: dtoTarget.CurrentAmount,
 		StartDate:     dtoTarget.StartDate,
 		EndDate:       dtoTarget.EndDate,
-		Members:       []member.Member{},
+		Members:       dtoTarget.Members,
 	}
 
 	repo := database.NewTargetRepositorySqlite3()

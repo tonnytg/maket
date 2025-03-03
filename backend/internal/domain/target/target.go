@@ -167,12 +167,13 @@ func (t *Target) Validate() (*Target, error) {
 	return t, nil
 }
 
-func NewTarget(name, description, startDate, endDate string, targetAmount float64, members []member.Member) *Target {
+func NewTarget(name, description, status, startDate, endDate string, targetAmount float64, members []member.Member) *Target {
 
 	t := Target{}
 	t.UUID = uuid.New().String()
 	t.SetName(name)
 	t.SetDescription(description)
+	t.SetStatus(status)
 	t.SetStatus(TargetStatusActive)
 	t.SetNewCurrentAmount(0)
 	t.SetStartDate(startDate)
